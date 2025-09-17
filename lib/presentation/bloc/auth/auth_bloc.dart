@@ -21,7 +21,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (ok) {
       emit(const AuthState.authenticated());
     } else {
-      emit(const AuthState.failure('Неверный логин или пароль'));
+      } else {
+          emit(const AuthState.failure('Invalid login or password'));
     }
   }
 

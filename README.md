@@ -1,52 +1,52 @@
-#ppTest
+# ppTest
 
-Архитектура: Clean Architecture + BLoC + DI (`get_it`).
+Architecture: Clean Architecture + BLoC + DI (`get_it`).
 
-## Требования
+## Requirements
 - Flutter SDK 3.16.x (Dart 3.2.x)
-- Chrome/Chromium для запуска web
+- Chrome/Chromium to run web
 
 
-## Установка зависимостей
+## Install dependencies
 ```bash
 flutter pub get
 ```
 
-## Запуск (дебаг)
+## Run (debug)
 ```bash
 flutter run -d chrome
 ```
-- В проекте (VS Code) настроены дополнительные флаги для Chrome (`--web-browser-flag --disable-web-security`) — это помогает обойти CORS в dev.
-- Если запускаете не из VS Code, стартуйте Chrome вручную с этими флагами или используйте собственный прокси.
+- The project (VS Code) has additional flags configured for Chrome (`--web-browser-flag --disable-web-security`) to bypass CORS in dev.
+- If you are not running from VS Code, start Chrome manually with these flags or use your own proxy.
 
-## Сборка production
+## Production build
 ```bash
 flutter build web
 ```
 
 
-## Авторизация
-- Логин: `demo`
-- Пароль: `demo`
+## Authorization
+- Login: `demo`
+- Password: `demo`
 
 
-## Архитектура
-- `lib/domain` — репозитории и юзкейсы: `GetRatesAgainstUsd`, `ConvertAmount`, `FormatDecimal18`, `FormatFiatFloor2`, `LoginUseCase`.
-- `lib/data` — реализации и сервисы: `RatesRepositoryImpl` + `RatesService`, `AuthRepositoryImpl`.
+## Architecture
+- `lib/domain` — repositories and usecases: `GetRatesAgainstUsd`, `ConvertAmount`, `FormatDecimal18`, `FormatFiatFloor2`, `LoginUseCase`.
+- `lib/data` — implementations and services: `RatesRepositoryImpl` + `RatesService`, `AuthRepositoryImpl`.
 - `lib/presentation` — `RatesBloc`, `AuthBloc`.
-- `lib/core/di/injector.dart` — регистрация зависимостей (`get_it`).
-- `lib/ui` — экраны и виджеты (Cupertino‑стиль конвертера, список курсов).
+- `lib/core/di/injector.dart` — dependency registration (`get_it`).
+- `lib/ui` — screens and widgets (Cupertino‑style converter, rates list).
 
-## Тестирование (ручные сценарии)
-1. Запустите приложение, войдите `demo/demo`.
-2. Убедитесь, что на `Rates` виден список курсов, работает обновление и автообновление.
-3. Перейдите в `Convert`, выберите From/To, введите сумму — проверьте расчёт и отображение комиссии.
-4. Проверьте запрет одинаковых пар (например, BTC → BTC).
-+ обратите внимание на наличие написанных тестов, можете прогнать и их.
+## Testing (manual scenarios)
+1. Run the application, login with `demo/demo`.
+2. Make sure that on the `Rates` screen the list of rates is visible, refresh and auto-refresh are working.
+3. Go to `Convert`, select From/To, enter the amount — check the calculation and fee display.
+4. Check the prohibition of identical pairs (e.g., BTC → BTC).
++ pay attention to the written tests, you can run them as well.
 
-## Замечания по CORS
-В dev браузер может блокировать запросы. В `RatesService` есть web‑fallback через публичный CORS‑proxy. В реальном проде лучше использовать свой прокси.
+## Notes on CORS
+In dev, the browser may block requests. In `RatesService` there is a web-fallback through a public CORS-proxy. In a real production environment, it is better to use your own proxy.
 
-## Замечания по реализации
+## Implementation notes
 
-- `lib/domain/constants/fiat_currencies.dart`: так как с бэкенда не приходит информация о том, какая валюта является фиатной, был добавлен хардкоженный список фиатных валют. 
+- `lib/domain/constants/fiat_currencies.dart`: since the backend does not provide information on which currency is fiat, a hardcoded list of fiat currencies has been added.

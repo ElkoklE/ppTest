@@ -19,12 +19,12 @@ class RatesPage extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Ошибка: $message'),
+                Text('Error: $message'),
                 const SizedBox(height: 8),
                 FilledButton(
                   onPressed: () =>
                       context.read<RatesBloc>().add(const RatesEvent.refreshRequested()),
-                  child: const Text('Повторить'),
+                  child: const Text('Retry'),
                 ),
               ],
             ),

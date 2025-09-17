@@ -154,7 +154,7 @@ class _ConverterPageState extends State<ConverterPage> {
           if (_from == _to && _from != null)
             const Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text('Нельзя конвертировать одинаковые пары', style: TextStyle(color: Colors.red)),
+              child: Text('Cannot convert identical pairs', style: TextStyle(color: Colors.red)),
             ),
           if (state is RatesLoading)
             const LinearProgressIndicator(minHeight: 2),
