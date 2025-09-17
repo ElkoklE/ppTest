@@ -50,7 +50,7 @@ class _ConverterPageState extends State<ConverterPage> {
     }
   }
 
-  ({String? amountDisplay, String? resultDisplay, String? footerDisplay}) _calculateConversion(Map<String, Decimal> ratesMap) {
+  _ConversionResult _calculateConversion(Map<String, Decimal> ratesMap) {
     String? amountDisplay;
     String? resultDisplay;
     String? footerDisplay;
@@ -81,7 +81,7 @@ class _ConverterPageState extends State<ConverterPage> {
         footerDisplay = '($base ${_to!} + 3%)';
       }
     }
-    return (amountDisplay: amountDisplay, resultDisplay: resultDisplay, footerDisplay: footerDisplay);
+    return _ConversionResult(amountDisplay: amountDisplay, resultDisplay: resultDisplay, footerDisplay: footerDisplay);
   }
 
   @override
@@ -175,6 +175,11 @@ class _ConverterPageState extends State<ConverterPage> {
        
     });
   }
+}
 
-  
+class _ConversionResult {
+  _ConversionResult({this.amountDisplay, this.resultDisplay, this.footerDisplay});
+  final String? amountDisplay;
+  final String? resultDisplay;
+  final String? footerDisplay;
 }
