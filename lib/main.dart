@@ -4,8 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/di/injector.dart';
 import 'presentation/bloc/rates/rates_bloc.dart';
 import 'presentation/bloc/auth/auth_bloc.dart';
-import 'domain/usecases/get_rates_against_usd.dart';
-import 'domain/usecases/login.dart';
+import 'presentation/bloc/converter/converter_bloc.dart';
 import 'presentation/ui/login_page.dart';
 import 'presentation/ui/home_shell.dart';
 
@@ -22,13 +21,9 @@ class CurrencyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (_) =>
-              RatesBloc(sl<GetRatesAgainstUsd>(), autoRefresh: const Duration(seconds: 30)),
-        ),
-        BlocProvider(
-          create: (_) => AuthBloc(sl<LoginUseCase>()),
-        ),
+        BlocProvider(create: (_) => sl<RatesBloc>()),
+        BlocProvider(create: (_) => sl<AuthBloc>()),
+        BlocProvider(create: (_) => sl<ConverterBloc>()),
       ],
       child: MaterialApp(
         title: 'Currency PWA',
