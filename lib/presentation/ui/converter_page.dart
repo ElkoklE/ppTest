@@ -50,7 +50,39 @@ class _ConverterPageState extends State<ConverterPage> {
     }
   }
 
-  
+  ({String? amountDisplay, String? resultDisplay, String? footerDisplay}) _calculateConversion(Map<String, Decimal> ratesMap) {
+    String? amountDisplay;
+    String? resultDisplay;
+    String? footerDisplay;
+
+    final amount = _parseAmount();
+    if (amount != null && _from != null && _to != null && _from != _to && ratesMap.isNotEmpty) {
+      final fromUsd = ratesMap[_from!]!;
+      final toUsd = ratesMap[_to!]!;
+      final convert = GetIt.I<ConvertAmount>();
+      final withFee = convert(amount: amount, fromUsd: fromUsd, toUsd: toUsd, feePercent: Decimal.parse('3'));
+
+      amountDisplay = '${amount.toString()} ${_from!}';
+      if (fiatCurrencies.contains(_to)) {
+        final floor2 = GetIt.I<FormatFiatFloor2>();
+        final Rational baseRatio = withFee / Decimal.parse('1.03');
+        final Decimal baseAmount = baseRatio.toDecimal(scaleOnInfinitePrecision: 40);
+        final base = floor2(baseAmount);
+        final fee = floor2(withFee);
+        resultDisplay = '$fee ${_to!}';
+        footerDisplay = '($base ${_to!} + 3%)';
+      } else {
+        final trunc18 = GetIt.I<FormatDecimal18>();
+        final Rational baseRatio = withFee / Decimal.parse('1.03');
+        final Decimal baseAmount = baseRatio.toDecimal(scaleOnInfinitePrecision: 40);
+        final base = trunc18(baseAmount);
+        final fee = trunc18(withFee);
+        resultDisplay = '$fee ${_to!}';
+        footerDisplay = '($base ${_to!} + 3%)';
+      }
+    }
+    return (amountDisplay: amountDisplay, resultDisplay: resultDisplay, footerDisplay: footerDisplay);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,38 +98,11 @@ class _ConverterPageState extends State<ConverterPage> {
       final currencies = ratesMap.keys.toList()..sort();
       _from ??= 'USD';
       _to ??= 'BTC';
-      
 
-      String? amountDisplay;
-      String? resultDisplay;
-      String? footerDisplay;
-
-      final amount = _parseAmount();
-      if (amount != null && _from != null && _to != null && _from != _to && ratesMap.isNotEmpty) {
-        final fromUsd = ratesMap[_from!]!;
-        final toUsd = ratesMap[_to!]!;
-        final convert = GetIt.I<ConvertAmount>();
-        final withFee = convert(amount: amount, fromUsd: fromUsd, toUsd: toUsd, feePercent: Decimal.parse('3'));
-
-        amountDisplay = '${amount.toString()} ${_from!}';
-        if (fiatCurrencies.contains(_to)) {
-          final floor2 = GetIt.I<FormatFiatFloor2>();
-          final Rational baseRatio = withFee / Decimal.parse('1.03');
-          final Decimal baseAmount = baseRatio.toDecimal(scaleOnInfinitePrecision: 40);
-          final base = floor2(baseAmount);
-          final fee = floor2(withFee);
-          resultDisplay = '$fee ${_to!}';
-          footerDisplay = '($base ${_to!} + 3%)';
-        } else {
-          final trunc18 = GetIt.I<FormatDecimal18>();
-          final Rational baseRatio = withFee / Decimal.parse('1.03');
-          final Decimal baseAmount = baseRatio.toDecimal(scaleOnInfinitePrecision: 40);
-          final base = trunc18(baseAmount);
-          final fee = trunc18(withFee);
-          resultDisplay = '$fee ${_to!}';
-          footerDisplay = '($base ${_to!} + 3%)';
-        }
-      }
+      final conversion = _calculateConversion(ratesMap);
+      final amountDisplay = conversion.amountDisplay;
+      final resultDisplay = conversion.resultDisplay;
+      final footerDisplay = conversion.footerDisplay;
 
       return Column(
         children: [
